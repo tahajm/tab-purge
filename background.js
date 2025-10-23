@@ -1,10 +1,6 @@
-chrome.action.onClicked.addListener(() => {
-  closeTabsWithDomain("gitlab.com");
-});
-
 chrome.runtime.onMessage.addListener((message) => {
-  if (message.action === "closeGitlabTabs") {
-    closeTabsWithDomain("gitlab.com");
+  if (message.action === "closeDomainTabs") {
+    closeTabsWithDomain(message.domain);
   }
 });
 
@@ -17,7 +13,7 @@ function closeTabsWithDomain(domain) {
           chrome.tabs.remove(tab.id);
         }
       } catch (e) {
-        // Ignore invalid URLs (like chrome://)
+        // ignore invalid URLs like chrome://
       }
     });
   });

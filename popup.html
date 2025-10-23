@@ -2,23 +2,34 @@
 <html>
   <head>
     <meta charset="UTF-8" />
-    <title>Close GitLab Tabs</title>
+    <title>Close Tabs by Domain</title>
     <style>
       body {
         font-family: sans-serif;
         padding: 10px;
-        width: 180px;
+        width: 250px;
       }
+      input,
       button {
+        margin-bottom: 5px;
         width: 100%;
-        padding: 8px;
-        font-size: 14px;
-        cursor: pointer;
+        padding: 6px;
+        box-sizing: border-box;
+      }
+      .domain-item {
+        display: flex;
+        justify-content: space-between;
+        margin-bottom: 4px;
+      }
+      .domain-name {
+        flex-grow: 1;
       }
     </style>
   </head>
   <body>
-    <button id="close">Close gitlab.com Tabs</button>
+    <input id="domainInput" placeholder="Add domain (e.g., gitlab.com)" />
+    <button id="addDomain">Add Domain</button>
+    <div id="domainList"></div>
     <script src="popup.js"></script>
   </body>
 </html>

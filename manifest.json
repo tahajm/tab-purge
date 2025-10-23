@@ -1,14 +1,14 @@
 {
   "manifest_version": 3,
-  "name": "Close GitLab Tabs",
-  "version": "1.0",
-  "description": "Closes all open tabs with the domain gitlab.com",
-  "permissions": ["tabs"],
+  "name": "Close Tabs by Domain",
+  "version": "1.1",
+  "description": "Manage a list of domains and close tabs for each domain",
+  "permissions": ["tabs", "storage"],
   "background": {
     "service_worker": "background.js"
   },
   "action": {
     "default_popup": "popup.html",
-    "default_title": "Close GitLab Tabs"
+    "default_title": "Close Tabs by Domain"
   }
 }
