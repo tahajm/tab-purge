@@ -5,11 +5,10 @@ chrome.runtime.onMessage.addListener((message) => {
 });
 
 function closeTabsWithDomain(domain) {
-  chrome.tabs.query({}, (tabs) => {
+  chrome.tabs.query({ currentWindow: true }, (tabs) => {
     tabs.forEach((tab) => {
       try {
-        const url = new URL(tab.url);
-        if (url.hostname.includes(domain)) {
+        if (tab.url.includes(domain)) {
           chrome.tabs.remove(tab.id);
         }
       } catch (e) {
