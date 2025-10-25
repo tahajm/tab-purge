@@ -11,6 +11,53 @@ function sanitizeDomain(domain) {
     .replace(/\/+$/, "");         // Remove trailing slashes
 }
 
+function isValidDomain(domain) {
+  if (!domain || domain.length === 0) {
+    return false;
+  }
+  
+  try {
+    // Add protocol to make it a valid URL for parsing
+    const url = new URL(`https://${domain}`);
+    
+    // Check that hostname equals our domain
+    if (url.hostname !== domain) {
+      return false;
+    }
+    
+    // Must contain at least one dot
+    if (!domain.includes('.')) {
+      return false;
+    }
+    
+    // Split by dot and validate each part
+    const parts = domain.split('.');
+    
+    // Must have at least 2 parts (e.g., domain.com)
+    if (parts.length < 2) {
+      return false;
+    }
+    
+    // Check each part is not empty and contains valid characters
+    for (const part of parts) {
+      if (part.length === 0 || !/^[a-zA-Z0-9-]+$/.test(part)) {
+        return false;
+      }
+    }
+    
+    // Last part (TLD) should be at least 2 chars and only letters
+    const tld = parts[parts.length - 1];
+    if (tld.length < 2 || !/^[a-zA-Z]+$/.test(tld)) {
+      return false;
+    }
+    
+    return true;
+  } catch (e) {
+    // If URL constructor throws, it's not a valid domain
+    return false;
+  }
+}
+
 // Load saved domains
 chrome.storage.local.get({ domains: [] }, (data) => {
   data.domains.forEach(addDomainToUI);
@@ -34,7 +81,18 @@ domainInput.addEventListener("input", hideError);
 // Add domain button click
 addButton.addEventListener("click", () => {
   const domain = sanitizeDomain(domainInput.value);
-  if (!domain) return;
+  
+  // Check if empty
+  if (!domain) {
+    showError("Please enter a domain");
+    return;
+  }
+  
+  // Validate domain format
+  if (!isValidDomain(domain)) {
+    showError("Please enter a valid domain (e.g., gitlab.com)");
+    return;
+  }
 
   // Save to storage
   chrome.storage.local.get({ domains: [] }, (data) => {
