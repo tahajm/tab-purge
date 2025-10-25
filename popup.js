@@ -2,6 +2,14 @@ const domainInput = document.getElementById("domainInput");
 const addButton = document.getElementById("addDomain");
 const domainListDiv = document.getElementById("domainList");
 
+// Sanitize domain: remove protocol and trailing slashes
+function sanitizeDomain(domain) {
+  return domain
+    .trim()
+    .replace(/^https?:\/\//, "") // Remove http:// or https://
+    .replace(/\/+$/, "");         // Remove trailing slashes
+}
+
 // Load saved domains
 chrome.storage.local.get({ domains: [] }, (data) => {
   data.domains.forEach(addDomainToUI);
@@ -9,7 +17,7 @@ chrome.storage.local.get({ domains: [] }, (data) => {
 
 // Add domain button click
 addButton.addEventListener("click", () => {
-  const domain = domainInput.value.trim();
+  const domain = sanitizeDomain(domainInput.value);
   if (!domain) return;
 
   // Save to storage
@@ -32,11 +40,10 @@ function addDomainToUI(domain) {
   div.className = "domain-item";
 
   const span = document.createElement("span");
-  // Remove https:// or http:// for display
-  const displayDomain = domain.replace(/^https?:\/\//, "");
-  span.textContent = displayDomain;
+  // Domain is already sanitized (no protocol or trailing slash)
+  span.textContent = domain;
   span.className = "domain-name";
-  span.title = displayDomain; // Show full domain on hover
+  span.title = domain; // Show full domain on hover
 
   const btnContainer = document.createElement("div");
   btnContainer.className = "button-container";
