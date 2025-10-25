@@ -24,6 +24,11 @@
     </div>
     
     <div id="domainList"></div>
-    <script src="popup.js"></script>
+    
+    <!-- Load scripts in order: utilities, storage, UI, then main -->
+    <script src="js/utils.js"></script>
+    <script src="js/storage.js"></script>
+    <script src="js/ui.js"></script>
+    <script src="js/popup.js"></script>
   </body>
 </html>
