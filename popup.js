@@ -16,22 +16,28 @@ function isValidDomain(domain) {
     return false;
   }
   
+  // Special case: localhost with optional port
+  if (/^localhost(:\d+)?$/.test(domain)) {
+    return true;
+  }
+  
   try {
     // Add protocol to make it a valid URL for parsing
     const url = new URL(`https://${domain}`);
     
-    // Check that hostname equals our domain
-    if (url.hostname !== domain) {
+    // Check that hostname equals our domain (or domain without port)
+    const domainWithoutPort = domain.split(':')[0];
+    if (url.hostname !== domainWithoutPort) {
       return false;
     }
     
     // Must contain at least one dot
-    if (!domain.includes('.')) {
+    if (!domainWithoutPort.includes('.')) {
       return false;
     }
     
     // Split by dot and validate each part
-    const parts = domain.split('.');
+    const parts = domainWithoutPort.split('.');
     
     // Must have at least 2 parts (e.g., domain.com)
     if (parts.length < 2) {
