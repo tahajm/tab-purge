@@ -22,47 +22,9 @@ function isValidDomain(domain) {
     return false;
   }
   
-  // Special case: localhost with optional port
-  if (/^localhost(:\d+)?$/.test(domain)) {
-    return true;
-  }
-  
   try {
     // Add protocol to make it a valid URL for parsing
-    const url = new URL(`https://${domain}`);
-    
-    // Check that hostname equals our domain (or domain without port)
-    const domainWithoutPort = domain.split(':')[0];
-    if (url.hostname !== domainWithoutPort) {
-      return false;
-    }
-    
-    // Must contain at least one dot
-    if (!domainWithoutPort.includes('.')) {
-      return false;
-    }
-    
-    // Split by dot and validate each part
-    const parts = domainWithoutPort.split('.');
-    
-    // Must have at least 2 parts (e.g., domain.com)
-    if (parts.length < 2) {
-      return false;
-    }
-    
-    // Check each part is not empty and contains valid characters
-    for (const part of parts) {
-      if (part.length === 0 || !/^[a-zA-Z0-9-]+$/.test(part)) {
-        return false;
-      }
-    }
-    
-    // Last part (TLD) should be at least 2 chars and only letters
-    const tld = parts[parts.length - 1];
-    if (tld.length < 2 || !/^[a-zA-Z]+$/.test(tld)) {
-      return false;
-    }
-    
+    new URL(`https://${domain}`);
     return true;
   } catch (e) {
     // If URL constructor throws, it's not a valid domain
