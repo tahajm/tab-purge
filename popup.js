@@ -78,6 +78,13 @@ function hideError() {
 // Hide error when user starts typing
 domainInput.addEventListener("input", hideError);
 
+// Submit on Enter key
+domainInput.addEventListener("keydown", (e) => {
+  if (e.key === "Enter") {
+    addButton.click();
+  }
+});
+
 // Add domain button click
 addButton.addEventListener("click", () => {
   const domain = sanitizeDomain(domainInput.value);
