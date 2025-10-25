@@ -32,11 +32,15 @@ function addDomainToUI(domain) {
   div.className = "domain-item";
 
   const span = document.createElement("span");
-  span.textContent = domain;
+  // Remove https:// or http:// for display
+  const displayDomain = domain.replace(/^https?:\/\//, "");
+  span.textContent = displayDomain;
   span.className = "domain-name";
+  span.title = displayDomain; // Show full domain on hover
 
   const btn = document.createElement("button");
-  btn.textContent = "Close Tabs";
+  btn.textContent = "Close";
+  btn.className = "close-btn";
   btn.addEventListener("click", () => {
     chrome.runtime.sendMessage({ action: "closeDomainTabs", domain });
   });
