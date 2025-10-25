@@ -1,6 +1,7 @@
 const domainInput = document.getElementById("domainInput");
 const addButton = document.getElementById("addDomain");
 const domainListDiv = document.getElementById("domainList");
+const errorMessage = document.getElementById("errorMessage");
 
 // Sanitize domain: remove protocol and trailing slashes
 function sanitizeDomain(domain) {
@@ -15,6 +16,21 @@ chrome.storage.local.get({ domains: [] }, (data) => {
   data.domains.forEach(addDomainToUI);
 });
 
+// Show error message
+function showError(message) {
+  errorMessage.textContent = message;
+  errorMessage.classList.add("show");
+}
+
+// Hide error message
+function hideError() {
+  errorMessage.textContent = "";
+  errorMessage.classList.remove("show");
+}
+
+// Hide error when user starts typing
+domainInput.addEventListener("input", hideError);
+
 // Add domain button click
 addButton.addEventListener("click", () => {
   const domain = sanitizeDomain(domainInput.value);
@@ -27,9 +43,10 @@ addButton.addEventListener("click", () => {
       chrome.storage.local.set({ domains: updatedDomains }, () => {
         addDomainToUI(domain);
         domainInput.value = "";
+        hideError();
       });
     } else {
-      alert("Domain already exists!");
+      showError("Domain already exists!");
     }
   });
 });
