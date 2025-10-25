@@ -1,6 +1,9 @@
 const domainInput = document.getElementById("domainInput");
 const titleInput = document.getElementById("titleInput");
 const addButton = document.getElementById("addDomain");
+const cancelBtn = document.getElementById("cancelBtn");
+const toggleAddBtn = document.getElementById("toggleAddBtn");
+const addFormContainer = document.getElementById("addFormContainer");
 const domainListDiv = document.getElementById("domainList");
 const errorMessage = document.getElementById("errorMessage");
 
@@ -77,6 +80,24 @@ function hideError() {
   errorMessage.classList.remove("show");
 }
 
+// Toggle add form visibility
+function showAddForm() {
+  addFormContainer.classList.remove("hidden");
+  toggleAddBtn.style.display = "none";
+  domainInput.focus();
+}
+
+function hideAddForm() {
+  addFormContainer.classList.add("hidden");
+  toggleAddBtn.style.display = "flex";
+  domainInput.value = "";
+  titleInput.value = "";
+  hideError();
+}
+
+toggleAddBtn.addEventListener("click", showAddForm);
+cancelBtn.addEventListener("click", hideAddForm);
+
 // Hide error when user starts typing
 domainInput.addEventListener("input", hideError);
 titleInput.addEventListener("input", hideError);
@@ -132,9 +153,7 @@ addButton.addEventListener("click", () => {
     const updatedDomains = [...domains, newDomain];
     chrome.storage.local.set({ domains: updatedDomains }, () => {
       addDomainToUI(newDomain);
-      domainInput.value = "";
-      titleInput.value = "";
-      hideError();
+      hideAddForm();
     });
   });
 });

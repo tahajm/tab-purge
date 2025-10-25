@@ -6,6 +6,46 @@ body {
   background-color: #f8f9fa;
 }
 
+.toggle-add-btn {
+  width: 100%;
+  padding: 10px 12px;
+  margin-bottom: 16px;
+  box-sizing: border-box;
+  background-color: white;
+  color: #4a90e2;
+  border: 2px dashed #4a90e2;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+}
+
+.toggle-add-btn:hover {
+  background-color: #f0f7ff;
+  border-color: #357abd;
+  color: #357abd;
+}
+
+.plus-icon {
+  font-size: 20px;
+  font-weight: bold;
+  line-height: 1;
+}
+
+.add-form-container {
+  margin-bottom: 16px;
+  transition: all 0.3s ease;
+}
+
+.add-form-container.hidden {
+  display: none;
+}
+
 .input-group {
   display: flex;
   flex-direction: column;
@@ -46,10 +86,14 @@ body {
   opacity: 1;
 }
 
-#addDomain {
-  width: 100%;
+.form-buttons {
+  display: flex;
+  gap: 8px;
+}
+
+.add-btn {
+  flex: 1;
   padding: 10px;
-  margin-bottom: 16px;
   box-sizing: border-box;
   background-color: #4a90e2;
   color: white;
@@ -61,18 +105,44 @@ body {
   transition: background-color 0.2s;
 }
 
-#addDomain:hover {
+.add-btn:hover {
   background-color: #357abd;
 }
 
-#addDomain:active {
+.add-btn:active {
   background-color: #2868a8;
+}
+
+.cancel-btn {
+  flex: 1;
+  padding: 10px;
+  box-sizing: border-box;
+  background-color: #f1f3f5;
+  color: #495057;
+  border: 1px solid #dee2e6;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.cancel-btn:hover {
+  background-color: #e9ecef;
+  border-color: #ced4da;
+}
+
+.cancel-btn:active {
+  background-color: #dee2e6;
 }
 
 #domainList {
   display: flex;
   flex-direction: column;
   gap: 8px;
+}
+
+#domainList:not(:empty) {
   padding-top: 8px;
   border-top: 1px solid #e6e6e6;
 }
