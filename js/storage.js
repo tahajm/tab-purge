@@ -72,3 +72,12 @@ function removeDomain(id, callback) {
   });
 }
 
+// Close all tabs for all domains
+function closeAllDomainTabs() {
+  loadDomains((domains) => {
+    domains.forEach(domainObj => {
+      chrome.runtime.sendMessage({ action: "closeDomainTabs", domain: domainObj.domain });
+    });
+  });
+}
+

@@ -11,9 +11,13 @@ const UI = {
       addButton: document.getElementById("addDomain"),
       cancelBtn: document.getElementById("cancelBtn"),
       toggleAddBtn: document.getElementById("toggleAddBtn"),
+      closeAllBtn: document.getElementById("closeAllBtn"),
       addFormContainer: document.getElementById("addFormContainer"),
       domainListDiv: document.getElementById("domainList"),
-      errorMessage: document.getElementById("errorMessage")
+      errorMessage: document.getElementById("errorMessage"),
+      confirmModal: document.getElementById("confirmModal"),
+      confirmYes: document.getElementById("confirmYes"),
+      confirmNo: document.getElementById("confirmNo")
     };
   },
   
@@ -140,12 +144,14 @@ const UI = {
   addDomainToUI(domainObj) {
     const domainElement = this.createDomainItem(domainObj);
     this.elements.domainListDiv.appendChild(domainElement);
+    this.updateCloseAllButton();
   },
   
   // Remove domain from UI
   removeDomainItem(id, domainElement) {
     removeDomain(id, () => {
       domainElement.remove();
+      this.updateCloseAllButton();
     });
   },
   
@@ -155,6 +161,48 @@ const UI = {
       domain: sanitizeDomain(this.elements.domainInput.value),
       title: this.elements.titleInput.value.trim()
     };
+  },
+  
+  // Update Close All button visibility
+  updateCloseAllButton() {
+    if (this.elements.domainListDiv.children.length > 0) {
+      this.elements.closeAllBtn.classList.remove("hidden");
+    } else {
+      this.elements.closeAllBtn.classList.add("hidden");
+    }
+  },
+  
+  // Show confirmation modal
+  showConfirmation(message, onConfirm) {
+    const modalContent = this.elements.confirmModal.querySelector("p");
+    modalContent.textContent = message;
+    
+    this.elements.confirmModal.classList.remove("hidden");
+    
+    // Remove old listeners
+    const newYesBtn = this.elements.confirmYes.cloneNode(true);
+    const newNoBtn = this.elements.confirmNo.cloneNode(true);
+    this.elements.confirmYes.replaceWith(newYesBtn);
+    this.elements.confirmNo.replaceWith(newNoBtn);
+    
+    // Update references
+    this.elements.confirmYes = newYesBtn;
+    this.elements.confirmNo = newNoBtn;
+    
+    // Add new listeners
+    this.elements.confirmYes.addEventListener("click", () => {
+      this.hideConfirmation();
+      onConfirm();
+    });
+    
+    this.elements.confirmNo.addEventListener("click", () => {
+      this.hideConfirmation();
+    });
+  },
+  
+  // Hide confirmation modal
+  hideConfirmation() {
+    this.elements.confirmModal.classList.add("hidden");
   }
 };
 

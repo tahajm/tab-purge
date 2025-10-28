@@ -16,7 +16,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 // Setup all event listeners
 function setupEventListeners() {
-  const { domainInput, titleInput, addButton, cancelBtn, toggleAddBtn } = UI.elements;
+  const { domainInput, titleInput, addButton, cancelBtn, toggleAddBtn, closeAllBtn } = UI.elements;
   
   // Toggle add form
   toggleAddBtn.addEventListener("click", () => UI.showAddForm());
@@ -37,6 +37,9 @@ function setupEventListeners() {
   
   // Add domain button
   addButton.addEventListener("click", handleAddDomain);
+  
+  // Close all button with confirmation
+  closeAllBtn.addEventListener("click", handleCloseAll);
   
   // Close dropdowns when clicking outside
   document.addEventListener("click", () => {
@@ -71,5 +74,15 @@ function handleAddDomain() {
       UI.showError(result.error);
     }
   });
+}
+
+// Handle close all with confirmation
+function handleCloseAll() {
+  UI.showConfirmation(
+    "This will close all tabs matching the domains in your list.",
+    () => {
+      closeAllDomainTabs();
+    }
+  );
 }
 

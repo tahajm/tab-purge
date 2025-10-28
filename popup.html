@@ -6,10 +6,13 @@
     <link rel="stylesheet" href="./style.css" />
   </head>
   <body>
-    <button id="toggleAddBtn" class="toggle-add-btn">
-      <span class="plus-icon">+</span>
-      <span>Add Domain</span>
-    </button>
+    <div class="header-actions">
+      <button id="toggleAddBtn" class="toggle-add-btn">
+        <span class="plus-icon">+</span>
+        <span>Add Domain</span>
+      </button>
+      <button id="closeAllBtn" class="close-all-btn hidden">Close All</button>
+    </div>
     
     <div id="addFormContainer" class="add-form-container hidden">
       <div class="input-group">
@@ -24,6 +27,18 @@
     </div>
     
     <div id="domainList"></div>
+    
+    <!-- Confirmation Modal -->
+    <div id="confirmModal" class="modal hidden">
+      <div class="modal-content">
+        <h3>Close All Tabs?</h3>
+        <p>This will close all tabs matching the domains in your list.</p>
+        <div class="modal-actions">
+          <button id="confirmYes" class="modal-btn confirm-btn">Yes, Close All</button>
+          <button id="confirmNo" class="modal-btn cancel-btn">Cancel</button>
+        </div>
+      </div>
+    </div>
     
     <!-- Load scripts in order: utilities, storage, UI, then main -->
     <script src="js/utils.js"></script>
