@@ -229,22 +229,25 @@ body {
   flex-shrink: 0;
   width: 60px;
   padding: 6px 10px;
-  background-color: #dc3545;
-  color: white;
-  border: none;
+  background-color: #fff5f5;
+  color: #dc3545;
+  border: 1px solid #f8d7da;
   border-radius: 4px;
   font-size: 12px;
   font-weight: 500;
   cursor: pointer;
-  transition: background-color 0.2s;
+  transition: all 0.2s;
 }
 
 .close-btn:hover {
-  background-color: #c82333;
+  background-color: #ffe5e7;
+  border-color: #f1aeb5;
+  color: #c82333;
 }
 
 .close-btn:active {
-  background-color: #bd2130;
+  background-color: #fdd4d7;
+  border-color: #ea868f;
 }
 
 .menu-wrapper {
