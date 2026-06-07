@@ -1,83 +1,75 @@
-// Storage management functions
-
-// Migrate old array format to new object format
 function migrateDomains(data) {
-  // If data is already in new format (array of objects with id)
-  if (Array.isArray(data) && data.length > 0 && data[0].id) {
-    return data;
-  }
-  
-  // If data is in old format (array of strings), migrate it
-  if (Array.isArray(data) && data.length > 0 && typeof data[0] === 'string') {
-    return data.map(domain => ({
+  if (!Array.isArray(data) || data.length === 0) return [];
+  if (typeof data[0] === "string") {
+    return data.map((domain) => ({
       id: generateId(),
-      domain: domain,
+      domain,
       title: "",
-      createdAt: Date.now()
+      createdAt: Date.now(),
     }));
   }
-  
-  // Empty or invalid data
+  if (data[0] && data[0].id) return data;
   return [];
 }
 
-// Load domains from storage
 function loadDomains(callback) {
   chrome.storage.local.get({ domains: [] }, (data) => {
-    const domains = migrateDomains(data.domains);
-    
-    // Save migrated data if needed
-    if (JSON.stringify(domains) !== JSON.stringify(data.domains)) {
-      saveDomains(domains);
+    if (chrome.runtime.lastError) {
+      callback([]);
+      return;
     }
-    
-    callback(domains);
+    const migrated = migrateDomains(data.domains);
+    const needsSave =
+      migrated.length !== data.domains.length ||
+      migrated.some((d, i) => d !== data.domains[i]);
+    if (needsSave) {
+      saveDomains(migrated, () => callback(migrated));
+    } else {
+      callback(migrated);
+    }
   });
 }
 
-// Save domains to storage
 function saveDomains(domains, callback) {
-  chrome.storage.local.set({ domains }, callback);
+  chrome.storage.local.set({ domains }, () => {
+    if (callback) callback(chrome.runtime.lastError || null);
+  });
 }
 
-// Add a new domain
 function addDomain(domain, title, callback) {
   loadDomains((domains) => {
-    // Check if domain already exists
-    if (domains.some(d => d.domain === domain)) {
-      callback({ success: false, error: "Domain already exists!" });
+    const normalized = domain.toLowerCase();
+    if (domains.some((d) => d.domain.toLowerCase() === normalized)) {
+      callback({ success: false, error: "Domain already exists" });
       return;
     }
-    
-    // Create new domain object
     const newDomain = {
       id: generateId(),
-      domain: domain,
-      title: title,
-      createdAt: Date.now()
+      domain: normalized,
+      title: (title || "").slice(0, 100),
+      createdAt: Date.now(),
     };
-    
-    const updatedDomains = [...domains, newDomain];
-    saveDomains(updatedDomains, () => {
+    saveDomains([...domains, newDomain], () => {
       callback({ success: true, domain: newDomain });
     });
   });
 }
 
-// Remove a domain by ID
 function removeDomain(id, callback) {
   loadDomains((domains) => {
-    const updatedDomains = domains.filter(d => d.id !== id);
-    saveDomains(updatedDomains, callback);
+    saveDomains(
+      domains.filter((d) => d.id !== id),
+      callback
+    );
   });
 }
 
-// Close all tabs for all domains
 function closeAllDomainTabs() {
   loadDomains((domains) => {
-    domains.forEach(domainObj => {
-      chrome.runtime.sendMessage({ action: "closeDomainTabs", domain: domainObj.domain });
+    if (domains.length === 0) return;
+    chrome.runtime.sendMessage({
+      action: "closeDomainTabs",
+      domains: domains.map((d) => d.domain),
     });
   });
 }
-

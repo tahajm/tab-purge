@@ -1,31 +1,30 @@
-// Utility functions
-
-// Generate unique ID
 function generateId() {
-  return Date.now().toString(36) + Math.random().toString(36).substr(2);
-}
-
-// Sanitize domain: remove protocol and trailing slashes
-function sanitizeDomain(domain) {
-  return domain
-    .trim()
-    .replace(/^https?:\/\//, "") // Remove http:// or https://
-    .replace(/\/+$/, "");         // Remove trailing slashes
-}
-
-// Validate domain format using URL API
-function isValidDomain(domain) {
-  if (!domain || domain.length === 0) {
-    return false;
+  if (crypto && typeof crypto.randomUUID === "function") {
+    return crypto.randomUUID();
   }
-  
+  return Date.now().toString(36) + Math.random().toString(36).slice(2);
+}
+
+function sanitizeDomain(input) {
+  if (!input) return "";
+  const trimmed = input.trim();
+  if (!trimmed) return "";
+  const withProtocol = /^https?:\/\//i.test(trimmed)
+    ? trimmed
+    : "https://" + trimmed;
   try {
-    // Add protocol to make it a valid URL for parsing
-    new URL(`https://${domain}`);
-    return true;
-  } catch (e) {
-    // If URL constructor throws, it's not a valid domain
-    return false;
+    return new URL(withProtocol).host.toLowerCase();
+  } catch {
+    return "";
   }
 }
 
+function isValidDomain(domain) {
+  if (!domain) return false;
+  try {
+    const u = new URL("https://" + domain);
+    return u.host === domain;
+  } catch {
+    return false;
+  }
+}

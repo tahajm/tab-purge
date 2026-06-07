@@ -1,96 +1,61 @@
-# Close Tabs by Domain
+# TabPurge
 
-A Chrome extension to manage and close browser tabs by domain with one click.
+A lightweight Chrome extension to manage a list of domains and close every matching tab in the current window with one click.
 
 ## Features
 
-- ✅ Add domains with optional custom titles
-- ✅ Close all tabs for a specific domain in the current window
-- ✅ Domain validation and sanitization
-- ✅ Clean, modern UI with smooth animations
-- ✅ Remove domains from your list
-- ✅ Supports localhost and custom ports
+- Save a list of domains you frequently want to bulk-close (e.g. `gitlab.com`, `jira.company.com`).
+- Optional custom title per entry, so the list reads like a label list rather than raw hostnames.
+- One-click close for a single domain, or close everything in the list at once.
+- Hostname-aware matching: `gitlab.com` matches `gitlab.com` and `*.gitlab.com`, never `notgitlab.com`.
+- Supports `localhost` and custom ports (e.g. `localhost:3000`).
+- All data stays local in `chrome.storage.local`. No network requests, no telemetry.
 
-## Project Structure
+## Install
 
-```
-close-gitlab-tabs/
-├── js/
-│   ├── utils.js      # Utility functions (validation, sanitization)
-│   ├── storage.js    # Chrome storage operations
-│   ├── ui.js         # UI components and manipulation
-│   └── popup.js      # Main coordination and event handlers
-├── background.js     # Background service worker
-├── popup.html        # Extension popup UI
-├── style.css         # Styles
-├── manifest.json     # Extension configuration
-└── README.md         # This file
-```
+### From source (developer mode)
 
-## File Descriptions
+1. Download or clone this repository.
+2. Open `chrome://extensions` and enable **Developer mode**.
+3. Click **Load unpacked** and select the repository root.
+4. Pin the extension to the toolbar for quick access.
 
-### `js/utils.js`
-Pure utility functions with no dependencies:
-- `generateId()` - Creates unique IDs for domains
-- `sanitizeDomain()` - Removes protocols and trailing slashes
-- `isValidDomain()` - Validates domain format using URL API
+### From the Chrome Web Store
 
-### `js/storage.js`
-Handles all Chrome storage operations:
-- `migrateDomains()` - Migrates old data format to new
-- `loadDomains()` - Loads domains from storage
-- `saveDomains()` - Saves domains to storage
-- `addDomain()` - Adds a new domain with validation
-- `removeDomain()` - Removes a domain by ID
-
-### `js/ui.js`
-Manages all UI interactions and DOM manipulation:
-- `UI.init()` - Initializes UI element references
-- `UI.showError()` / `UI.hideError()` - Error message display
-- `UI.showAddForm()` / `UI.hideAddForm()` - Form visibility
-- `UI.createDomainItem()` - Creates domain list item elements
-- `UI.addDomainToUI()` - Adds domain to the visible list
-
-### `js/popup.js`
-Main entry point that coordinates everything:
-- Initializes the extension
-- Sets up event listeners
-- Handles user interactions
-- Coordinates between storage and UI
-
-## Data Model
-
-Domains are stored as objects with the following structure:
-
-```javascript
-{
-  id: "unique-id-123",        // Unique identifier
-  domain: "gitlab.com",        // The actual domain
-  title: "Work Projects",      // Optional custom display name
-  createdAt: 1234567890        // Timestamp
-}
-```
+Coming soon.
 
 ## Usage
 
-1. Click the extension icon
-2. Click "+ Add Domain"
-3. Enter a domain (e.g., `gitlab.com` or `https://github.com`)
-4. Optionally add a custom title
-5. Click "Add"
-6. Click "Close" next to any domain to close all tabs for that domain
-7. Click the ⋮ menu to remove a domain from the list
+1. Click the TabPurge toolbar icon.
+2. Click **+ Add Domain** and enter a domain (e.g. `gitlab.com`, `https://github.com`, or `localhost:3000`).
+3. Optionally add a label.
+4. Click **Close** next to any entry to close all matching tabs in the current window.
+5. Click **Close All** to close tabs for every entry in the list (with a confirmation prompt).
+6. Use the **⋮** menu to remove an entry.
 
-## Development
+## Matching rules
 
-The extension follows a clean, modular architecture:
-- **Separation of Concerns**: Each file has a single responsibility
-- **No Dependencies**: Pure JavaScript, no frameworks
-- **Clear Flow**: utils → storage → ui → popup
-- **Easy to Maintain**: Well-commented, organized code
+When you store `example.com`:
 
-## Browser Permissions
+- `example.com` — matches
+- `app.example.com` — matches
+- `sub.app.example.com` — matches
+- `notexample.com` — does **not** match
+- `example.com.evil.com` — does **not** match
 
-- `tabs` - To query and close browser tabs
-- `storage` - To save domain list
+When you store `localhost:3000`, only tabs on that exact host:port match.
 
+## Permissions
+
+- `tabs` — required to read tab URLs and close tabs.
+- `storage` — required to persist your domain list locally.
+
+No host permissions are requested, and the extension never injects content scripts.
+
+## Privacy
+
+TabPurge does not collect, transmit, or share any data. Your domain list is stored only in your browser's local extension storage.
+
+## License
+
+MIT
